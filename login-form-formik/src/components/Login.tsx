@@ -1,7 +1,8 @@
 import { Form, Formik, Field, ErrorMessage } from 'formik'
-import { toast, ToastContainer } from 'react-toastify'
 import * as yup from 'yup';
+import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
     return (
@@ -24,24 +25,20 @@ const Login = () => {
                 <Form className='flex flex-col gap-3 px-4'>
                     <h1 className='text-4xl text-blue-600 my-4 font-Nunito font-bold mx-auto tracking-wider'>فرم ورود</h1>
                     <div className='flex flex-col gap-3'>
-                        <Lable text='نام کاربری' _for='userName' />
+                        <Lable _for='userName' >نام کاربری</Lable>
                         <Input name='userName' />
-                        <p className='h-6 '>
                             <Error name="userName" />
-                        </p>
                     </div>
                     <div className='flex flex-col gap-3'>
-                        <Lable _for='password' text="رمزعبور" />
+                        <Lable _for='password'>رمزعبور</Lable>
                         {/* <Field type="password" name="password" /> */}
-                        <Input name='password' />
-                        <p className='h-6'>
+                        <Input name='password' type='password' />
                             <Error name="password" />
-                        </p>
                     </div>
-                    <a href='/' className='text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors duration-100' title='برای ساخت حساب کلیک کنید'>حساب کاربری ندارید؟</a>
+                    <Link to='/SignUp' className='text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors duration-100' title='برای ساخت حساب کلیک کنید'>حساب کاربری ندارید؟</Link>
                     <div className='flex justify-around mt-6'>
-                        <Button type="submit" text="ورود"></Button>
-                        <Button type='reset' text='پاک کردن'></Button>
+                        <Button type="submit">ورود</Button>
+                        <Button type='reset'>پاک کردن</Button>
                     </div>
                 </Form>
             </Formik>
@@ -51,23 +48,40 @@ const Login = () => {
 }
 
 export default Login
-
-const Lable = ({ text, _for }: any) => {
-    return <label htmlFor={_for} className='opacity-70 font-bold text-xl'>{text}</label>
-
+type LableProps = {
+    _for:string
+    children:React.ReactNode
+    classname?:string
 }
 
-const Button = ({ type, text }: any) => {
-    return <button className='bg-blue-600 text-lg text-slate-50 rounded-lg px-4 py-1 font-Nunito hover:bg-blue-500 transition duration-200 font-semibold ' type={type}>{text}</button>
+export const Lable:React.FC<LableProps> = ({ children, _for , classname=''}) => {
+    return <label htmlFor={_for} className={`${classname} opacity-60 font-bold text-xl`}>{children}</label>
+}
+type ButtonProps = {
+    type:'submit'| 'reset'
+    children:React.ReactNode
+}
+
+export const Button:React.FC<ButtonProps> = ({ type, children }) => {
+    return <button className='bg-blue-600 text-lg text-slate-50 rounded-lg px-4 py-1 font-Nunito hover:bg-blue-500 transition duration-200 font-semibold ' type={type}>{children}</button>
 
 }
-const Input = ({ name }: any) => {
+type InputProps = {
+    type?:'password'| 'text' | 'checkbox' 
+    name:string
+}
+export const Input:React.FC<InputProps> = ({ name, type = 'text' }) => {
     return (
-        <Field name={name} className="w-11/12 block  rounded-lg focus:outline-none px-3 py-0.5 ring-1 ring-blue-500 focus:ring-2" />
+        <Field type={type} name={name} id={name} className={`${type !== 'checkbox' ? 'w-11/12 ring-1 ring-blue-500 focus:ring-2' : 'accent-indigo-600'} block  rounded-lg focus:outline-none px-3 py-0.5`} />
     )
 }
-const Error = ({ name }: any) => {
+type ErrorProps = {
+    name:string
+}
+export const Error:React.FC <ErrorProps> = ({ name }) => {
     return (
+        <p className='h-6'>
         <ErrorMessage name={name} className="text-red-500 text-xs" component="span" />
+        </p>
     )
 }
